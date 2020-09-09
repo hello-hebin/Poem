@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <title>古诗文列表页</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/offcanvas.css" rel="stylesheet">
+
+    <style>
+      body{
+        font-family: 楷体;
+        font-size: 20px;
+      }
+
+      .poem_title{
+        border-bottom: 2px solid #2aabd2;
+      }
+
+      .poem_list div{
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-fixed-top navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">古诗文列表页</a>
+        </div>
+      </div><!-- /.container -->
+    </nav><!-- /.navbar -->
+
+    <!--布局容器-->
+    <div class="container">
+      <p class="poem_title">
+        <h2>
+          <!--<a href="index.html">诗词列表</a>>>唐诗三百首-->
+          <a href="index.html" >诗词列表</a>>><p class="category" style="display: inline">唐诗三百首</p>
+        </h2>
+      </div>
+
+      <div class="row poem_list" id="poemList" style="text-align: center" >
+        <!--<div class="row poem_list" id="poemList" style="text-align: left" >-->
+      </div>
+    </div>
+
+    <script src="js/jquery-2.1.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/offcanvas.js"></script>
+    <script src="js/getParameter.js"></script>
+  </body>
+<script>
+  // 页面加载完成之后
+  $(function(){
+    // 获取查询参数
+    var category = getParameter("category");
+    // 把一个数据解码
+    category = decodeURI(category);
+    // alert(category);
+    $(".category").text(category);
+
+    // 根据category查询诗词列表
+    $.get("/queryByCategoryServlet",{category:category},function (result) {
+        // 解析响应数据
+      console.log(result);
+      // 定义一个字符串
+      var poemHtml= '';
+      $(result).each(function(index,element){
+        var titleAndAuthor = element.title+"("+element.author+")";
+        poemHtml += '<div class="col-md-4">\n' +
+                '          <a target="_blank" href="poem_detail.html?id='+element.id+'">'+titleAndAuthor+'</a>\n' +
+                '        </div>'
+      });
+      // 把html插入到页面中
+      $("#poemList").html(poemHtml);
+    },"json");
+  });
+</script>
+
+</html>
